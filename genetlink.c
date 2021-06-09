@@ -84,6 +84,7 @@ int
 genl_register_family_with_ops(struct genl_family *family,
 	struct genl_ops *ops, size_t n_ops)
 {
+	D("Gen: register family w ops");
 	/* TODO: should check family name collision */
 
 	int idfamily = family->id;
@@ -108,6 +109,7 @@ genl_register_family_with_ops(struct genl_family *family,
 int
 genl_unregister_family(struct genl_family *family)
 {
+	D("Gen: unregister family");
 	LIST_REMOVE(family, family_list);
 
 	return 0;
@@ -117,6 +119,7 @@ int
 genl_register_mc_group(struct genl_family *family,
 	struct genl_multicast_group *grp)
 {
+	D("Gen: register mc group");
 	/* TODO: only one multicast supported per family */
 	grp->id = family->id;
 	grp->family = family;
@@ -130,6 +133,7 @@ static int
 genl_parse_info(char * data, const struct genl_family *family,
 	const struct nla_policy *policy, struct genl_info *info)
 {
+	D("Gen: parse_info");
 	struct nlmsghdr *nlmsg = (struct nlmsghdr *)data;
 	struct genlmsghdr *genlmsg =
 		(struct genlmsghdr *)(data + NLMSG_HDRLEN);
@@ -156,6 +160,7 @@ void *
 genlmsg_put(struct mbuf *m, uint32_t portid, uint32_t seq,
 	struct genl_family *family, int flags, uint8_t cmd)
 {
+	D("Gen: genlmsg_put");
 	struct nlmsghdr *nlh;
 	struct genlmsghdr *g;
 
@@ -232,6 +237,7 @@ static int
 genetlink_call_op_doit(const struct genl_ops *curop,
 	struct nlmsghdr *nlmsg, struct genl_info *pinfo)
 {
+	D("Gen:call op doit");
 	int err;
 
 	genl_lock();
@@ -249,6 +255,7 @@ genetlink_call_op_doit(const struct genl_ops *curop,
 static int
 genetlink_receive_message(char *data)
 {
+	D("Gen: receive_message");
 	struct nlmsghdr *nlmsg = (struct nlmsghdr *) data;
 	struct genlmsghdr *genlmsg;
 	struct genl_family *curfamily;
@@ -375,6 +382,7 @@ genl_notify(struct genl_family *f,
 	struct mbuf *m, struct net *net, uint32_t portid,
 	uint32_t group, struct nlmsghdr *nlh, int flags)
 {
+	D("Gen: notify");
 #if 0
 	if (nlh) report = nlmsg_report(nlh);
 	nlmsg_notify(..) {
@@ -394,6 +402,7 @@ genl_notify(struct genl_family *f,
 static int
 genl_ctrl_lookup_family(struct mbuf *m, struct genl_info * info)
 {
+	D("Gen: lookup family");
 	struct genl_family * family;
 	struct nlattr * nlaname = info->attrs[CTRL_ATTR_FAMILY_NAME];
 	char * familyname = (char *)(nlaname + 1);
@@ -445,6 +454,7 @@ static struct bsd_nl_fn _me = {
 static void
 genetlinkload(void *u __unused)
 {
+	D("Gen: genet link load");
 	LIST_INIT(&genl_family_list);
 	cur_max_genl_family = GENL_ID_CTRL;
 	bsd_nl_proto_reg(&_me); /* register with parent */

@@ -83,6 +83,9 @@ do_write(int s, int l)
 	n->nlmsg_type = NLMSG_MIN_TYPE; // force callback
 	ret = send(s, buf, l, 0);
 	D("send returns %d", ret);
+	if (ret < 0) {
+		D("send %d fails with error %d", s, errno);
+	}
 	return ret;
 }
 
@@ -93,10 +96,15 @@ main(int argc, char *argv[])
 	int x = NETLINK_GENERIC;
 	int i = 1; /* argument pointer */
 
+	/*NOT CALLED
 	if (0 && argc > 1) {
 		x = atoi(argv[1]);
 		i++;
 	}
+	*/
+	D("NETLINK_GENERIC value is %d", NETLINK_GENERIC);
+	D("Initial error %d", errno);
+	D("===================================");
 	s = do_open(x);
 	D("socket returns %d", s);
 

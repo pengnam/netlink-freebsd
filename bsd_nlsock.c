@@ -81,6 +81,7 @@ static void	netlink_input(struct mbuf *m);
 int
 bsd_netlink_send_msg(struct socket *so, struct mbuf *m)
 {
+	D("Call: sending message");
 	D("m %p proto %d pid %d plen %d so %p", _P32(m),
 	    _M_NLPROTO(m), NETLINK_CB(m).portid, m->m_pkthdr.len, _P32(so));
 	return netisr_queue(NETISR_NETLINK, m);
@@ -100,6 +101,7 @@ struct netisr_handler netlink_nh = {
 static int
 sysctl_netlink_netisr_maxqlen(SYSCTL_HANDLER_ARGS)
 {
+	D("Call: max qlength check");
 	int error, qlimit;
 
 	netisr_getqlimit(&netlink_nh, &qlimit);
@@ -118,6 +120,7 @@ SYSCTL_PROC(_net_netlink, OID_AUTO, netisr_maxqlen, CTLTYPE_INT|CTLFLAG_RW,
 static void
 netlink_init(void)
 {
+	D("Call: netlink_init");
 	int tmp;
 
 	if (TUNABLE_INT_FETCH("net.netlink.netisr_maxqlen", &tmp))
@@ -136,6 +139,7 @@ static int
 raw_input_netlink_cb(struct mbuf *m, struct sockproto *proto,
     struct sockaddr *src, struct rawcb *rp)
 {
+	D("Call: raw_input_netlink_cb");
 	struct socket *so;
 	uint32_t key, so_key;
 	struct nlmsghdr *msg;
@@ -167,6 +171,7 @@ raw_input_netlink_cb(struct mbuf *m, struct sockproto *proto,
 static void
 netlink_input(struct mbuf *m)
 {
+	D("Call: netlink input");
 	/* dummy argument for raw_input_ext.
 	 * messages come from the kernel so we always use the same source.
 	 */
@@ -196,6 +201,7 @@ netlink_input(struct mbuf *m)
 static int
 netlink_attach(struct socket *so, int proto, struct thread *td)
 {
+	D("Call: netlink_attach");
 	struct rawcb *rp;
 	int error;
 
@@ -310,6 +316,7 @@ static int
 netlink_send(struct socket *so, int flags, struct mbuf *m, struct sockaddr *nam,
 	 struct mbuf *control, struct thread *td)
 {
+	D("Call: netlink_send");
 	return netlink_output(m, so);
 }
 
@@ -370,12 +377,17 @@ static struct pr_usrreqs netlink_usrreqs = {
 static int
 netlink_output(struct mbuf *m, struct socket *so NLO_EXTRA )
 {
+	D("Call: netlink_output");
 	int ret;
 	struct rawcb *rp;
 	int proto;
 
 	if (m == NULL || ((m->m_len < sizeof(long)) &&
 		       (m = m_pullup(m, sizeof(long))) == NULL))
+		D("Stats: m is null: %d", m == NULL);
+		if (m != NULL) {
+			D("Stats: m_len is %d while m_pullup is %d", m->m_len, (m_pullup(m, sizeof(long))) == NULL);
+		}
 		return (ENOBUFS);
 	rp = sotorawcb(so);
 	proto = rp->rcb_proto.sp_protocol;

@@ -51,6 +51,7 @@ struct bsd_nl_fn nlp[MAX_LINKS];
 int
 bsd_nl_proto_check(int proto)
 {
+	D("Netlink: proto check");
 	if (proto < 0 || proto >= MAX_LINKS)
 		return EINVAL;
 	return (nlp[proto].rx == NULL) ? EAFNOSUPPORT : 0;
@@ -60,6 +61,7 @@ bsd_nl_proto_check(int proto)
 int
 bsd_nl_proto_reg(struct bsd_nl_fn *x)
 {
+	D("Netlink: proto reg");
 	uint32_t id;
 
 	if (x == NULL) {
@@ -110,6 +112,7 @@ static int
 validate_nla(const struct nlattr *nla, int maxtype,
 	const struct nla_policy *policy)
 {
+	D("Netlink: validate nla");
 	const struct nla_policy *pt;
 	uint16_t alen = (uint16_t)nla_len(nla);
 	/* len excluding header, caller guarantees alen >= 0 */
@@ -205,6 +208,7 @@ int
 bsd_nla_parse(struct nlattr **tb, int maxtype,
 	const struct nlattr *head, int len, const struct nla_policy *policy)
 {
+	D("Netlink: nla parse");
 	/* XXX: parse attributes carefully using policy */
 	const struct nlattr * nla;
 	int err;
@@ -574,6 +578,7 @@ nlattr *nla_reserve(struct mbuf *m, int attrtype, int attrlen)
 int
 nlmsg_end(struct mbuf *m, struct nlmsghdr *nlh)
 {
+	D("Netlink: nlmsg_end");
 	nlh->nlmsg_len = _M_CUR(m) - (char *)nlh;
 	return m->m_pkthdr.len;
 }
@@ -582,6 +587,7 @@ nlmsg_end(struct mbuf *m, struct nlmsghdr *nlh)
 int
 nlmsg_reply(struct mbuf *m, struct genl_info *info)
 {
+	D("Netlink: nlmsg_reply");
 	int l = m->m_pkthdr.len;
 
 	D("have %d bytes out of %d", l, _M_BUFLEN(m));
