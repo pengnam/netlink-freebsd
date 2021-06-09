@@ -14,7 +14,9 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/time.h>
-#include <linux/netlink.h>
+#include <netlink/linux/netlink.h>
+
+
 
 /*---- start debugging macros --- luigi */
 #define ND(format, ...)

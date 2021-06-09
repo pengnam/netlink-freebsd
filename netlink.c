@@ -539,7 +539,7 @@ void
 nlmsg_trim(struct mbuf *m, const void * start)
 {
 	// XXX validity checks ?
-	m->m_pkthdr.len = (char *)start - (char *)_M_BUFSTART(m);
+	m->m_pkthdr.len = (const char *) start - (char *)_M_BUFSTART(m);
 }
 
 /*

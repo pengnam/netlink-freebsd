@@ -336,7 +336,7 @@ static inline int
 nla_parse(struct nlattr **tb, int maxtype, const struct nlattr *head,
 		int len, const struct nla_policy *policy)
 {
-	return -nla_parse(tb, maxtype, head, len, policy);
+	return -bsd_nla_parse(tb, maxtype, head, len, policy);
 }
 
 static inline int
