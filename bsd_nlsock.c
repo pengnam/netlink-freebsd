@@ -384,10 +384,6 @@ netlink_output(struct mbuf *m, struct socket *so NLO_EXTRA )
 
 	if (m == NULL || ((m->m_len < sizeof(long)) &&
 		       (m = m_pullup(m, sizeof(long))) == NULL))
-		D("Stats: m is null: %d", m == NULL);
-		if (m != NULL) {
-			D("Stats: m_len is %d while m_pullup is %d", m->m_len, (m_pullup(m, sizeof(long))) == NULL);
-		}
 		return (ENOBUFS);
 	rp = sotorawcb(so);
 	proto = rp->rcb_proto.sp_protocol;
